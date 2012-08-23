@@ -1,0 +1,9 @@
+/output
+/out*
+/.idea
+*.iml
+*.iws
+*.ipr
+/xperf-*
+*-profile.txt
+/config
