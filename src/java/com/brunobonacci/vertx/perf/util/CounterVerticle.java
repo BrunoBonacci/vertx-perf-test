@@ -78,7 +78,7 @@ public abstract class CounterVerticle extends Verticle {
 
     private void dumpStats(){
 
-        String filename = System.getProperty("stats.filename", "vx-perf-data.csv");
+        String filename = System.getProperty("vx.perf.data", "vx-perf-data.csv");
         System.out.println( "Appending statistics to: " + filename );
 
         // remove first 5 sec for JVM warm up

@@ -7,11 +7,21 @@ settings = [
         cores: Runtime.runtime.availableProcessors(),
 
         tests: [
-                "com.brunobonacci.vertx.perf.bus.number",
-                "com.brunobonacci.vertx.perf.bus.string",
+                [ pkg:"com.brunobonacci.vertx.perf.bus.number", prod:1, cons:1 ],
+                [ pkg:"com.brunobonacci.vertx.perf.bus.number", prod:1, cons:2 ],
+                [ pkg:"com.brunobonacci.vertx.perf.bus.number", prod:1, cons:3 ],
+                [ pkg:"com.brunobonacci.vertx.perf.bus.number", prod:1, cons:4 ],
+                [ pkg:"com.brunobonacci.vertx.perf.bus.number", prod:2, cons:1 ],
+                [ pkg:"com.brunobonacci.vertx.perf.bus.number", prod:3, cons:1 ],
+                [ pkg:"com.brunobonacci.vertx.perf.bus.number", prod:4, cons:1 ],
+                [ pkg:"com.brunobonacci.vertx.perf.bus.number", prod:2, cons:2 ],
+                [ pkg:"com.brunobonacci.vertx.perf.bus.number", prod:3, cons:3 ],
+                [ pkg:"com.brunobonacci.vertx.perf.bus.number", prod:4, cons:4 ],
         ]
     ]
 tools = [ ant: new AntBuilder() ]
+
+suite = []
 
 createConfig();
 createRunner();
@@ -28,13 +38,17 @@ def createConfig(){
 
         def cfg = new JsonBuilder();
         cfg(
-            'test-package': test,
-            "nProducers": 1,
-            "nConsumers": 1,
+            'test-package': test.pkg,
+            "nProducers": test.prod,
+            "nConsumers": test.cons,
             hasGenerator: false
         )
 
-        new File( "$settings.configDir/config-${test}.json").text = cfg.toPrettyString();
+        test.qualifier = "${test.prod}x${test.cons}";
+        def testCfg = new File( "$settings.configDir/config-${test.pkg}-${test.qualifier}.json")
+        testCfg.text = cfg.toPrettyString();
+        test.config = testCfg;
+        suite << test;
     }
 }
 
@@ -57,10 +71,11 @@ echo '(*) RUNNING TESTS'
 """ + settings.tests.collect{
 """
 
-echo '  (-) running $it'
-export VX_OUT_DIR=\$OUTDIR/$it
+echo '  (-) running $it.pkg ${it.prod}x${it.cons}'
+export VX_OUT_DIR=\$OUTDIR/$it.pkg/$it.qualifier
+export VX_DATA_FILE=\$OUTDIR/vx-perf-data.csv
 mkdir -p \$VX_OUT_DIR
-./run.sh $settings.configDir/config-${it}.json
+./run.sh $it.config
 """
 }.join("\n")
 
