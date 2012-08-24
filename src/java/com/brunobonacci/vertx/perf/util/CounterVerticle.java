@@ -1,3 +1,19 @@
+/*
+   Copyright 2012 - Bruno Bonacci
+
+   Licensed under the Apache License, Version 2.0 (the "License");
+   you may not use this file except in compliance with the License.
+   You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+*/
+
 package com.brunobonacci.vertx.perf.util;
 
 import org.vertx.java.core.Handler;
@@ -29,14 +45,14 @@ public abstract class CounterVerticle extends Verticle {
 
     public void start() {
 
-        long timerID = vertx.setPeriodic( Constants.SAMPLE_EVERY, new Handler<Long>() {
+        vertx.setPeriodic( Constants.SAMPLE_EVERY, new Handler<Long>() {
             public void handle(Long timerID) {
                 // this check every five seconds, if no new msg are processed,
                 // then it assume that it is terminated and exit.
                 if( timerCount != 0 && timerCount == counter ){
                     System.out.println("Nothing in the past 5 seconds, then exit!");
                     dumpStats();
-                    // give time to others to write stats. FIXME
+                    // give time to others verticles to write stats. TODO: FIXME
                     try{ Thread.currentThread().sleep(2000);} catch( Exception x) {}
                     container.exit();
                 } else {
@@ -54,7 +70,7 @@ public abstract class CounterVerticle extends Verticle {
                     int load = (int)(OSmx.getSystemLoadAverage() * 100 / nCPU);
 
                     if( displayStats )
-                        System.out.println(processed+" msg received in: " + time + " ms --> " + ((long) processed / time) + "K msg/s  @ " + load + "% of CPU");
+                        System.out.println(processed+" msg received in: " + time + " ms --> " + processed / time + "K msg/s  @ " + load + "% of CPU");
 
                     // record statistics
                     stats.add( new StatRecord(time, processed, load ));
@@ -82,7 +98,7 @@ public abstract class CounterVerticle extends Verticle {
         System.out.println( "Appending statistics to: " + filename );
 
         // remove first 5 sec for JVM warm up
-        for(int i = 0; i < (int)(5000 / Constants.SAMPLE_EVERY); i++ )
+        for(int i = 0; i < 5000 / Constants.SAMPLE_EVERY; i++ )
             stats.remove(0);
 
         // remove last because in most case is going to be wrong
