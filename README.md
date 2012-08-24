@@ -39,4 +39,7 @@ Check results into:
   * Import **aggredated-stats.csv** into Excel or OpenOffice and graph results.
 
 
-                                 
+### Documentation and Results
+  * [Documentation](wiki/Home)
+
+
