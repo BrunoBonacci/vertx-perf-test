@@ -3,7 +3,7 @@ Vert.x Performance Suite
 
 This is a basic set of scripts to measure the performance of different aspects of Vert.x
 
-### How to build
+### How to build and run a single test
 Requires
  * JAVA 7
  * VERTX_HOME pointing to vert.x-1.2.3 or greater
