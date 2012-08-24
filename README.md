@@ -4,14 +4,16 @@ Vert.x Performance Suite
 This is a basic set of scripts to measure the performance of different aspects of Vert.x
 
 ### How to build
-  * Requires
-    * JAVA 7 available in PATH
-    * VERTX_HOME pointing to vert.x-1.2.3 or greater
-  * Build with:
+Requires
+ * JAVA 7
+ * VERTX_HOME pointing to vert.x-1.2.3 or greater
+ * Groovy 2 
+
+Build with:
 
     ./clean.sh && ./mk.sh
     
-  * select test package to run and prepare config file like:
+Select test package to run and prepare config file like:
 
     $ vi config-bus-nuber-1x1.json
     -------8<-------8<-------8<-------8<-------8<-------8<-------8<-------
@@ -23,18 +25,18 @@ This is a basic set of scripts to measure the performance of different aspects o
     }
     -------8<-------8<-------8<-------8<-------8<-------8<-------8<-------
 
-  * finally run single test with:
+Finally run single test with:
 
     ./run.sh config-bus-nuber-1x1.json
 
-  * Aggregate results with:
+Aggregate results with:
 
     groovy scripts/PrepareStats.groovy ./vx-perf-data.csv > aggredated-stats.csv
 
-  * check results into:
-    * cpu-profile.txt - with CPU metrics
-    * gc-profile.txt - JVM GC activity, you can graph this using [GCViewer](http://www.tagtraum.com/gcviewer.html)
-    * Import *aggredated-stats.csv* into Excel or OpenOffice and graph results.
+Check results into:
+  * **cpu-profile.txt** - with CPU metrics
+  * **gc-profile.txt** - JVM GC activity, you can graph this using [GCViewer](http://www.tagtraum.com/gcviewer.html)
+  * Import **aggredated-stats.csv** into Excel or OpenOffice and graph results.
 
 
                                  
