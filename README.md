@@ -3,57 +3,38 @@ Vert.x Performance Suite
 
 This is a basic set of scripts to measure the performance of different aspects of Vert.x
 
-Throughput - The Event Bus 
-==========================
-The first set test aims to verify the performance of Vert.x event bus.
+### How to build
+  * Requires
+    * JAVA 7 available in PATH
+    * VERTX_HOME pointing to vert.x-1.2.3 or greater
+  * Build with:
 
-
-Sending a message to the bus (fire n forget mode)
--------------------------------------------------
-
-The methodology that we will use is the following:
-  * A Producer Verticle is sending messages to the bus to a specific destination
-  * A Consumer Verticle is registered to receive messages from that specific destination
-  * The Consumer will increment a counter every time a message is received.
-  * The Consumer will take a sample of the current count and the elapsed time at regular intervals.
-  * When the consumer doens't receive any new message for a few seconds, it will write the average throughtput into a file and terminate.
-
-With this simple pattern we will try to test the performance of sending Numbers (long), Strings and JSonObjects.
-
-    +--------------+
-    |   Producer   |
-    |--------------|
-    | bus.send()   |
-    +--------------+
-          |
-          | destination
-          V
-    +--------------+
-    |   Consumer   |
-    |--------------|
-    | +count       |
-    +--------------+
+    ./clean.sh && ./mk.sh
     
-We will test this simple setup in a number of different configurations, such as:
+  * select test package to run and prepare config file like:
 
-  * Type Variation
-    * send a number
-    * send a string
-    * send a JsonObject
-  * Producer Variation
-    * Trying to increase the number of producers and keep only one consumer
-  * Consumer Variation
-    * Trying to increase the number of consumers and keep only one producer
-  * Symmetric Variation
-    * Trying to increase both Producers and Consumers
+    $ vi config-bus-nuber-1x1.json
+    -------8<-------8<-------8<-------8<-------8<-------8<-------8<-------
+    {
+      "test-package": "com.brunobonacci.vertx.perf.bus.number",
+      "nProducers": 1,
+      "nConsumers": 1,
+      "hasGenerator": false
+    }
+    -------8<-------8<-------8<-------8<-------8<-------8<-------8<-------
 
-**NOTE:**
-  - All tests in this section will use 1 single JVM (no cluster mode)
-  - We will sample CPU and GC to understand load and GC impact
+  * finally run single test with:
+
+    ./run.sh config-bus-nuber-1x1.json
+
+  * Aggregate results with:
+
+    groovy scripts/PrepareStats.groovy ./vx-perf-data.csv > aggredated-stats.csv
+
+  * check results into:
+    * cpu-profile.txt - with CPU metrics
+    * gc-profile.txt - JVM GC activity, you can graph this using [GCViewer](http://www.tagtraum.com/gcviewer.html)
+    * Import *aggredated-stats.csv* into Excel or OpenOffice and graph results.
 
 
-Sending a message to the bus and handle the response (Message/Reply mode)
--------------------------------------------------------------------------
-In this case we want to measure the throught of the bus when sending a message
-that expect a response (async). (TODO)
-
+                                 
