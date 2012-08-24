@@ -40,6 +40,6 @@ Check results into:
 
 
 ### Documentation and Results
-  * [Documentation](wiki/Home)
+  * [Documentation](https://github.com/BrunoBonacci/vertx-perf-test/wiki)
 
 
